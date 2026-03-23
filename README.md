@@ -2,7 +2,7 @@
 
 > **Core Philosophy:** The best security is the security you never notice.
 
-![ASTRA Logo](astra.png)
+![ASTRA Logo](logo/astra-logo.png)
 
 ASTRA is a revolutionary security framework that operates on a 5-tier friction model, where 95% of users experience Tier 0-1 (invisible to near-invisible), and only obvious threats hit higher tiers.
 
