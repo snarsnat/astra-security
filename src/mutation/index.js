@@ -547,4 +547,12 @@ class MutationSystem {
         userChallenges: userChallenges.length,
         uniqueUsers: new Set(userChallenges.map(m => m.userId)).size,
         successRate: (successRate * 100).toFixed(1) + '%',
-        avgTime: userChallenges
+        avgTime: userChallenges.length > 0 
+          ? userChallenges.reduce((sum, m) => sum + (m.timeMs || 0), 0) / userChallenges.length
+          : 0
+      },
+      challengeDistribution,
+      themeUsage,
+      mutationHistory: this.mutationHistory.slice(-10) // Last 10 mutations
+    };
+  }
