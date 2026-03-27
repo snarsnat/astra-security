@@ -72,7 +72,8 @@ export class Astra {
         throw new Error('Invalid API key');
       }
     } catch (error) {
-      throw new Error(`Failed to initialize Astra: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to initialize Astra: ${message}`);
     }
   }
 
@@ -228,7 +229,7 @@ export class Astra {
     } catch (error) {
       clearTimeout(timeoutId);
       
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Request timeout');
       }
       
