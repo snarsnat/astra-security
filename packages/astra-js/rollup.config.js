@@ -55,6 +55,7 @@ export default defineConfig([
       format: 'umd',
       name: 'AstraSecurity',
       sourcemap: true,
+      exports: 'named',
       globals: {
         axios: 'axios'
       }
@@ -80,6 +81,7 @@ export default defineConfig([
       format: 'umd',
       name: 'AstraSecurity',
       sourcemap: true,
+      exports: 'named',
       globals: {
         axios: 'axios'
       }
