@@ -1,0 +1,64 @@
+{
+ "name": "astra-security",
+ "version": "1.0.0",
+ "description": "Advanced security library for AI detection and human verification",
+ "main": "dist/index.js",
+ "module": "dist/index.esm.js",
+ "types": "dist/index.d.ts",
+ "files": [
+  "dist",
+  "README.md"
+ ],
+ "scripts": {
+  "build": "rollup -c",
+  "dev": "rollup -c -w",
+  "test": "jest",
+  "lint": "eslint src",
+  "prepublishOnly": "npm run build && npm test",
+  "format": "prettier --write \"src/**/*.{js,ts}\""
+ },
+ "keywords": [
+  "security",
+  "ai-detection",
+  "human-verification",
+  "bot-protection",
+  "web-security"
+ ],
+ "author": "Astra Security <support@astra.security>",
+ "license": "MIT",
+ "repository": {
+  "type": "git",
+  "url": "https://github.com/snarsnat/astra-security.git"
+ },
+ "bugs": {
+  "url": "https://github.com/snarsnat/astra-security/issues"
+ },
+ "homepage": "https://github.com/snarsnat/astra-security",
+ "dependencies": {
+  "axios": "^1.6.0"
+ },
+ "devDependencies": {
+  "@rollup/plugin-commonjs": "^25.0.7",
+  "@rollup/plugin-node-resolve": "^15.2.3",
+  "@rollup/plugin-terser": "^0.4.4",
+  "@rollup/plugin-typescript": "^11.1.5",
+  "@types/jest": "^29.5.8",
+  "@typescript-eslint/eslint-plugin": "^6.13.1",
+  "@typescript-eslint/parser": "^6.13.1",
+  "eslint": "^8.54.0",
+  "jest": "^29.7.0",
+  "prettier": "^3.1.0",
+  "rollup": "^4.5.0",
+  "ts-jest": "^29.1.1",
+  "tslib": "^2.6.2",
+  "typescript": "^5.3.2"
+ },
+ "engines": {
+  "node": ">=14.0.0"
+ },
+ "browserslist": [
+  "> 0.5%",
+  "last 2 versions",
+  "not dead"
+ ]
+}
