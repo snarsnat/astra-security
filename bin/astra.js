@@ -163,6 +163,124 @@ async function startLocalServer(authId, projectName) {
           }
         }
         
+        // Dashboard API endpoints
+        else if (parsedUrl.pathname === '/api/user/info') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            user: {
+              id: 'user_' + authId.substring(0, 8),
+              name: 'Astra User',
+              email: 'user@astra.security',
+              avatar: 'https://ui-avatars.com/api/?name=Astra+User&background=0D8ABC&color=fff',
+              role: 'admin',
+              joined: new Date().toISOString().split('T')[0]
+            }
+          }));
+        }
+        
+        else if (parsedUrl.pathname === '/api/dashboard/stats') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            stats: {
+              totalProjects: 3,
+              activeScans: 1,
+              vulnerabilities: 12,
+              uptime: '99.8%',
+              lastScan: '2 hours ago',
+              protectedAssets: 47
+            }
+          }));
+        }
+        
+        else if (parsedUrl.pathname === '/api/projects/list') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            projects: [
+              {
+                id: 'proj_001',
+                name: 'Web Application',
+                status: 'active',
+                lastScan: '2026-03-27T14:30:00Z',
+                vulnerabilities: 3,
+                url: 'https://app.example.com'
+              },
+              {
+                id: 'proj_002',
+                name: 'API Gateway',
+                status: 'scanning',
+                lastScan: '2026-03-28T09:15:00Z',
+                vulnerabilities: 8,
+                url: 'https://api.example.com'
+              },
+              {
+                id: 'proj_003',
+                name: 'Database Cluster',
+                status: 'inactive',
+                lastScan: '2026-03-25T11:45:00Z',
+                vulnerabilities: 1,
+                url: 'internal://db-cluster'
+              }
+            ]
+          }));
+        }
+        
+        else if (parsedUrl.pathname === '/api/projects/create') {
+          if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => {
+              try {
+                const data = JSON.parse(body);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  success: true,
+                  message: `Project "${data.name}" created successfully!`,
+                  projectId: 'proj_' + Date.now()
+                }));
+              } catch (error) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  success: false,
+                  error: 'Invalid request data'
+                }));
+              }
+            });
+          } else {
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, message: 'Method not allowed' }));
+          }
+        }
+        
+        else if (parsedUrl.pathname === '/api/auth/register') {
+          if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => {
+              try {
+                const data = JSON.parse(body);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  success: true,
+                  message: 'Registration successful',
+                  userId: 'user_' + Date.now()
+                }));
+              } catch (error) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  success: false,
+                  error: 'Invalid request data'
+                }));
+              }
+            });
+          } else {
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, message: 'Method not allowed' }));
+          }
+        }
+        
         // Serve static files (CSS, JS)
         else if (parsedUrl.pathname.endsWith('.css') || parsedUrl.pathname.endsWith('.js')) {
           const filePath = path.join(__dirname, '..', 'public', parsedUrl.pathname);
