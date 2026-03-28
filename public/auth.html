@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Connect app page</title>
+ <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script>
+ tailwind.config = {
+ theme: {
+ fontFamily: {
+ sans: ['Space Grotesk', 'sans-serif'],
+ },
+ },
+ }
+ </script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+ :root {
+ --font-size: 16px;
+ --background: #ffffff;
+ --foreground: oklch(0.145 0 0);
+ --card: #ffffff;
+ --card-foreground: oklch(0.145 0 0);
+ --popover: oklch(1 0 0);
+ --popover-foreground: oklch(0.145 0 0);
+ --primary: #030213;
+ --primary-foreground: oklch(1 0 0);
+ --secondary: oklch(0.95 0.0058 264.53);
+ --secondary-foreground: #030213;
+ --muted: #ececf0;
+ --muted-foreground: #717182;
+ --accent: #e9ebef;
+ --accent-foreground: #030213;
+ --destructive: #d4183d;
+ --destructive-foreground: #ffffff;
+ --border: rgba(0, 0, 0, 0.1);
+ --input: transparent;
+ --input-background: #f3f3f5;
+ --switch-background: #cbced4;
+ --font-weight-medium: 500;
+ --font-weight-normal: 400;
+ --ring: oklch(0.708 0 0);
+ --radius: 0.625rem;
+ }
+
+ * {
+ border-color: var(--border);
+ outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+ }
+
+ body {
+ background-color: var(--background);
+ color: var(--foreground);
+ }
+
+ html {
+ font-size: var(--font-size);
+ }
+
+ button {
+ font-size: var(--font-size);
+ font-weight: var(--font-weight-medium);
+ line-height: 1.5;
+ }
+
+ /* Button styles */
+ .btn {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ gap: 0.5rem;
+ white-space: nowrap;
+ border-radius: 0.375rem;
+ font-size: 0.875rem;
+ font-weight: 500;
+ transition: all 0.2s;
+ }
+
+ .btn:disabled {
+ opacity: 0.5;
+ pointer-events: none;
+ }
+
+ .btn-primary {
+ background-color: var(--primary);
+ color: var(--primary-foreground);
+ }
+
+ .btn-primary:hover {
+ opacity: 0.9;
+ }
+
+ .btn-outline {
+ border: 1px solid var(--border);
+ background-color: var(--background);
+ color: var(--foreground);
+ }
+
+ .btn-outline:hover {
+ background-color: var(--accent);
+ color: var(--accent-foreground);
+ }
+
+ .btn-lg {
+ height: 2.5rem;
+ padding-left: 1.5rem;
+ padding-right: 1.5rem;
+ border-radius: 0.375rem;
+ }
+
+ /* Arrow icon animation */
+ .arrow-icon {
+ transition: transform 0.2s ease;
+ }
+
+ .arrow-icon:hover {
+ transform: translateX(4px);
+ }
+ </style>
+</head>
+<body>
+ <div id="app" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #f9fafb; font-family: 'Space Grotesk', sans-serif;">
+ <div style="display: flex; flex-direction: column; align-items: center; gap: 2rem; background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); width: 320px; padding: 3rem;">
+ <!-- ASTRA Logo -->
+ <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+ <div style="width: 5rem; height: 5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
+ <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+ <path d="M2 17l10 5 10-5"></path>
+ <path d="M2 12l10 5 10-5"></path>
+ </svg>
+ </div>
+ <div style="font-size: 1.5rem; font-weight: 700; color: #374151; letter-spacing: -0.025em;">
+ ASTRA
+ </div>
+ </div>
+
+ <!-- Text -->
+ <h1 style="font-size: 1.25rem; text-align: center; color: #1f2937; font-weight: 500;">
+ Attach your app to Astra to secure it
+ </h1>
+
+ <!-- Status Display -->
+ <div id="status" style="text-align: center; font-size: 0.875rem; color: #6b7280;">
+ <div id="authIdDisplay" style="margin-bottom: 0.5rem; font-family: monospace; background-color: #f3f4f6; padding: 0.5rem; border-radius: 0.375rem;"></div>
+ <div id="timerDisplay" style="margin-bottom: 1rem;">This link expires in: <span id="timer">10:00</span></div>
+ <div id="connectionStatus">Waiting for connection...</div>
+ </div>
+
+ <!-- Connect Button -->
+ <button
+ onclick="handleConnect()"
+ class="btn btn-primary btn-lg"
+ style="width: 100%;"
+ id="connectButton"
+ >
+ Connect
+ </button>
+
+ <!-- Copyright Text -->
+ <p style="font-size: 0.75rem; color: #9ca3af; text-align: center;">
+ Copyright 2026 Astra®
+ </p>
+ </div>
+ </div>
+
+ <script>
+ // Get authId from URL
+ const urlParams = new URLSearchParams(window.location.search);
+ const authId = urlParams.get('authId');
+ const project = urlParams.get('project') || 'unknown-project';
+
+ // Display authId
+ document.getElementById('authIdDisplay').textContent = `Auth ID: ${authId}`;
+
+ // Timer logic (10 minutes)
+ let timeLeft = 10 * 60; // 10 minutes in seconds
+ const timerElement = document.getElementById('timer');
+ const statusElement = document.getElementById('connectionStatus');
+ const connectButton = document.getElementById('connectButton');
+
+ function updateTimer() {
+ const minutes = Math.floor(timeLeft / 60);
+ const seconds = timeLeft % 60;
+ timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+ 
+ if (timeLeft <= 0) {
+ clearInterval(timerInterval);
+ statusElement.textContent = 'Link expired. Please generate a new one.';
+ statusElement.style.color = '#ef4444';
+ connectButton.disabled = true;
+ connectButton.textContent = 'Expired';
+ return;
+ }
+ 
+ timeLeft--;
+ }
+
+ const timerInterval = setInterval(updateTimer, 1000);
+ updateTimer(); // Initial call
+
+ // Connection logic
+ async function handleConnect() {
+ connectButton.disabled = true;
+ connectButton.textContent = 'Connecting...';
+ statusElement.textContent = 'Redirecting to ASTRA Security Dashboard...';
+ statusElement.style.color = '#f59e0b';
+
+ try {
+ // Redirect to ASTRA website main page with CLI parameters
+ // The website will handle login and project registration
+ const websiteUrl = `http://localhost:8082/?authId=${authId}&project=${project}&setup=true&source=cli`;
+ 
+ // Open in same window (replacing the CLI auth page)
+ window.location.href = websiteUrl;
+ 
+ } catch (error) {
+ console.error('Connection error:', error);
+ statusElement.textContent = 'Connection failed. Please try again.';
+ statusElement.style.color = '#ef4444';
+ connectButton.disabled = false;
+ connectButton.textContent = 'Try Again';
+ }
+ }
+
+ // Auto-check for existing connection
+ async function checkConnection() {
+ try {
+ // Check if already authenticated with ASTRA website
+ const websiteAuthUrl = `http://localhost:8082/api/auth/verify?authId=${authId}`;
+ const response = await fetch(websiteAuthUrl);
+ if (response.ok) {
+ const data = await response.json();
+ if (data.authenticated) {
+ statusElement.textContent = '✓ Already authenticated with ASTRA!';
+ statusElement.style.color = '#10b981';
+ connectButton.disabled = true;
+ connectButton.textContent = 'Connected';
+ 
+ // Close window after 3 seconds
+ setTimeout(() => {
+ window.close();
+ }, 3000);
+ }
+ }
+ } catch (error) {
+ // Silently fail - connection check is optional
+ }
+ }
+
+ // Check connection status on page load
+ checkConnection();
+ </script>
+</body>
+</html>
